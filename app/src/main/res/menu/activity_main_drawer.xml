@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/gundem"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Gündem" />
+
+        <item
+            android:id="@+id/spor"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Spor" />
+        <item
+            android:id="@+id/ekonomi"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Ekonomi" />
+        <item
+            android:id="@+id/magazin"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Magazin" />
+
+    </group>
+
+
+
+</menu>
