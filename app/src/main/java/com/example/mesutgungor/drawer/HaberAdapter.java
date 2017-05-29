@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -68,6 +69,9 @@ public class HaberAdapter extends ArrayAdapter<Haber> {
         habertarihi.setText(haberler.get(position).getHabertarihi());
         haberkategorisi.setText(haberler.get(position).getHaberinkategorisi().trim().toUpperCase());
         habericerigi.setText(haberler.get(position).getHaberinicerigi());
+
+
+
 
         return convertView;
     }

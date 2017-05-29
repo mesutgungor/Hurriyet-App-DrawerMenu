@@ -1,6 +1,8 @@
 package com.example.mesutgungor.drawer;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -8,6 +10,8 @@ import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,6 +22,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewDebug;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -107,7 +112,6 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.magazin) {
             new getirHaberleri().execute("magazin");
             toolbar.setTitle("Magazin");
-
         } else if (id == R.id.spor) {
             new getirHaberleri().execute("spor");
             toolbar.setTitle("Spor");
@@ -132,15 +136,15 @@ public class MainActivity extends AppCompatActivity
             int i=0;
             StringBuilder result = new StringBuilder();
             HttpURLConnection urlConnection = null;
-            BufferedReader reader = null;
 
             //Try bloğunda hurriyet apisine bağlanıyoruz ve haberleri içeren json stringini oluşturuyoruz.
             try {
                 URL url = new URL(Config.BaseUrl + "articles?apikey=" + Config.ApiKey+"&$filter=Path eq '/"+args[0]+"/'");
                 urlConnection = (HttpURLConnection) url.openConnection();
                 InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                String result2=in.toString();
-                reader = new BufferedReader(new InputStreamReader(in));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                Integer response=urlConnection.getResponseCode();
+
                 String line;
                 while ((line = reader.readLine()) != null) {
                     result.append(line);
@@ -150,6 +154,7 @@ public class MainActivity extends AppCompatActivity
                 urlConnection.disconnect();
 
             }catch( Exception e) {
+
                 e.printStackTrace();
             }
             finally {
@@ -179,11 +184,13 @@ public class MainActivity extends AppCompatActivity
                             JSONObject c = jsonArray.getJSONObject(i);
                             if (c != null) {
 
+                                String haberid    = c.getString("Id");
                                 String habertarihi = c.getString("CreatedDate");
                                 String habericerigi = c.getString("Description");
                                 String haberkategorisi = c.getString("Path");
                                 String haberbasligi = c.getString("Title");
                                 String haberurl = c.getString("Url");
+                                String habermetni ="Haber";
 
                                 JSONArray files = c.getJSONArray("Files");
                                 String haberresmiurl = "";
@@ -199,7 +206,9 @@ public class MainActivity extends AppCompatActivity
 
                                 }
 
-                                Haber haberin = new Haber(haberresmiurl,  haberkategorisi,  habericerigi, haberurl, habertarihi, haberbasligi);
+                              //  Haber haberin = new Haber(haberid,haberresmiurl,  haberkategorisi,  habericerigi, haberurl, habertarihi, haberbasligi);
+                                Haber haberin = new Haber( haberid,  haberresmiurl,  haberbasligi,  habertarihi,  haberkategorisi,  habericerigi,  haberurl,habermetni);
+
                                 haberlistesi.add(haberin);
                             }
                         }
@@ -238,26 +247,27 @@ public class MainActivity extends AppCompatActivity
                 lv.setAdapter(ha);
 
 
-//                lv.setOnItemClickListener(
-//                        new AdapterView.OnItemClickListener() {
-//                            @Override
-//                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                                String haberurl = haberlistesi.get(position).getHaberUrl();
-//                                Intent intent = new Intent(getApplicationContext(),HaberDetay.class);
-//                                intent.putExtra("HABERURL",haberurl);
-//                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//                                getApplicationContext().startActivity(intent);
-//
-//                            }
-//                        }
-//                );
+                lv.setOnItemClickListener(
+                        new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                String haberurl = haberlistesi.get(position).getHaberUrl();
+                                String haberid = haberlistesi.get(position).getHaberid();
+                                String haberbasligi=haberlistesi.get(position).getHaberbasligi();
+                                String haberdesc = haberlistesi.get(position).getHaberinicerigi();
+                                 new getirHaberIcerigi().execute(Integer.parseInt(haberid), position);
+
+
+
+                            }
+                        }
+                );
 
                 lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                     @Override
                     public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
                                                    int position, long id) {
 
-                        Log.v("long clicked","pos: " + position);
                         Intent sharingIntent = new Intent(
                                 android.content.Intent.ACTION_SEND);
                         sharingIntent.setType("text/plain");
@@ -290,6 +300,91 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public class Haberci
+    {
+        public String mHabermetni;
+        public int mHaberIndexi;
+    }
 
+    public class getirHaberIcerigi extends AsyncTask<Integer, Integer, Haberci> {
+
+
+        @Override
+        protected Haberci doInBackground(Integer... params) {
+            StringBuilder mesult = new StringBuilder();
+            HttpURLConnection urlConnection = null;
+            Haberci haberci = new Haberci();
+
+            //Try bloğunda hurriyet apisine bağlanıyoruz ve haberleri içeren json stringini oluşturuyoruz.
+            try {
+                URL url = new URL(Config.BaseUrl + "articles/" + params[0].toString() + "?apikey=" + Config.ApiKey);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                Integer response = urlConnection.getResponseCode();
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    mesult.append(line);
+                    //i=i+100;
+                    // sleep(10000);
+                }
+                urlConnection.disconnect();
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            } finally {
+                urlConnection.disconnect();
+            }
+
+            haberci.mHabermetni=mesult.toString();
+            haberci.mHaberIndexi=params[1];
+
+            return haberci;
+
+        }
+
+        @Override
+        protected void onPostExecute(Haberci haberci) {
+            String habermetni="";
+            if (haberci.mHabermetni!= null) {
+                try {
+                    JSONObject jsonobject = new JSONObject(haberci.mHabermetni);
+                    if (jsonobject != null) {
+                            habermetni = jsonobject.getString("Text");
+                            haberlistesi.get(haberci.mHaberIndexi).setHaberMetni(habermetni);
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setTitle(haberlistesi.get(haberci.mHaberIndexi).getHaberbasligi())
+                                .setMessage(Html.fromHtml(habermetni))
+                                .setCancelable(true)
+                                .setNegativeButton("Kapat",
+                                new DialogInterface.OnClickListener() {
+
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                       dialog.cancel();
+                                    }
+                                })
+                                .show();
+                    }
+                } catch (final JSONException e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(),
+                                    "JSON Hatası",
+                                    Toast.LENGTH_LONG)
+                                    .show();
+                        }
+                    });
+
+
+                }
+
+
+            }
+        }
+    }
 
 }

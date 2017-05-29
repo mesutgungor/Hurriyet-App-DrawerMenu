@@ -12,8 +12,7 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:id="@+id/haberlistesi"
-    tools:listitem="@layout/list_view_row_model"
-    >
+    tools:listitem="@layout/list_view_row_model">
 </ListView>
 
 </android.support.constraint.ConstraintLayout>

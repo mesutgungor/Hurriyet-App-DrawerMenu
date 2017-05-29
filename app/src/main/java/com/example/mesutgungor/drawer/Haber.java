@@ -2,20 +2,33 @@ package com.example.mesutgungor.drawer;
 
 
  class Haber {
+     String haberid;
      String haberresmi;
      String haberbasligi;
      String habertarihi;
      String haberinkategorisi;
      String haberinicerigi;
      String haberUrl;
+     String habermetni;
 
-     public Haber(String haberresmi, String haberinkategorisi, String haberinicerigi, String haberUrl, String habertarihi, String haberbasligi) {
+     public Haber(String haberid, String haberresmi, String haberbasligi, String habertarihi, String haberinkategorisi, String haberinicerigi, String haberUrl, String habermetni) {
+         this.haberid = haberid;
          this.haberresmi = haberresmi;
+         this.haberbasligi = haberbasligi;
+         this.habertarihi = habertarihi;
          this.haberinkategorisi = haberinkategorisi;
          this.haberinicerigi = haberinicerigi;
          this.haberUrl = haberUrl;
-         this.habertarihi = habertarihi;
-         this.haberbasligi = haberbasligi;
+         this.habermetni = habermetni;
+
+     }
+
+     public String getHaberid() {
+         return haberid;
+     }
+
+     public void setHaberid(String haberid) {
+         this.haberid = haberid;
      }
 
      public String getHaberresmi() {
@@ -26,28 +39,12 @@ package com.example.mesutgungor.drawer;
          this.haberresmi = haberresmi;
      }
 
-     public String getHaberUrl() {
-         return haberUrl;
+     public String getHaberbasligi() {
+         return haberbasligi;
      }
 
-     public void setHaberUrl(String haberUrl) {
-         this.haberUrl = haberUrl;
-     }
-
-     public String getHaberinicerigi() {
-         return haberinicerigi;
-     }
-
-     public void setHaberinicerigi(String haberinicerigi) {
-         this.haberinicerigi = haberinicerigi;
-     }
-
-     public String getHaberinkategorisi() {
-         return haberinkategorisi;
-     }
-
-     public void setHaberinkategorisi(String haberinkategorisi) {
-         this.haberinkategorisi = haberinkategorisi;
+     public void setHaberbasligi(String haberbasligi) {
+         this.haberbasligi = haberbasligi;
      }
 
      public String getHabertarihi() {
@@ -58,11 +55,35 @@ package com.example.mesutgungor.drawer;
          this.habertarihi = habertarihi;
      }
 
-     public String getHaberbasligi() {
-         return haberbasligi;
+     public String getHaberinkategorisi() {
+         return haberinkategorisi;
      }
 
-     public void setHaberbasligi(String haberbasligi) {
-         this.haberbasligi = haberbasligi;
+     public void setHaberinkategorisi(String haberinkategorisi) {
+         this.haberinkategorisi = haberinkategorisi;
+     }
+
+     public String getHaberinicerigi() {
+         return haberinicerigi;
+     }
+
+     public void setHaberinicerigi(String haberinicerigi) {
+         this.haberinicerigi = haberinicerigi;
+     }
+
+     public String getHaberUrl() {
+         return haberUrl;
+     }
+
+     public void setHaberUrl(String haberUrl) {
+         this.haberUrl = haberUrl;
+     }
+
+     public String getHaberMetni() {
+         return habermetni;
+     }
+
+     public void setHaberMetni(String habermetni) {
+         this.haberUrl = habermetni;
      }
  }
