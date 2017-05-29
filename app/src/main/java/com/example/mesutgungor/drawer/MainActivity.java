@@ -255,7 +255,26 @@ public class MainActivity extends AppCompatActivity
                                 String haberid = haberlistesi.get(position).getHaberid();
                                 String haberbasligi=haberlistesi.get(position).getHaberbasligi();
                                 String haberdesc = haberlistesi.get(position).getHaberinicerigi();
-                                 new getirHaberIcerigi().execute(Integer.parseInt(haberid), position);
+                                String habermetni = haberlistesi.get(position).getHaberMetni();
+                                if(habermetni=="Haber") {
+                                    new getirHaberIcerigi().execute(Integer.parseInt(haberid), position);
+                                }else {
+                                    new AlertDialog.Builder(MainActivity.this)
+                                            .setTitle(haberbasligi)
+                                            .setMessage(Html.fromHtml(habermetni))
+                                            .setCancelable(true)
+                                            .setNegativeButton("Kapat",
+                                                    new DialogInterface.OnClickListener() {
+
+                                                        @Override
+                                                        public void onClick(DialogInterface dialog, int which) {
+                                                            dialog.cancel();
+                                                        }
+                                                    })
+                                            .show();
+
+
+                                }
 
 
 

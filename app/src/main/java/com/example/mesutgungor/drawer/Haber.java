@@ -84,6 +84,6 @@ package com.example.mesutgungor.drawer;
      }
 
      public void setHaberMetni(String habermetni) {
-         this.haberUrl = habermetni;
+         this.habermetni = habermetni;
      }
  }
